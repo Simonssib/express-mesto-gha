@@ -37,7 +37,7 @@ const createUser = (req, res) => {
                     .status(400)
                     .send({ message: 'Некорректные данные' });
             }
-            res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
         });
 };
 
@@ -56,7 +56,7 @@ const updateUserInformation = (req, res) => {
                     .status(404)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
             }
-            res.status(200).send({ data: user })
+            return res.status(200).send({ data: user })
         })
         .catch((err) => {
             if (err.name === 'ValidationError') {
@@ -69,7 +69,7 @@ const updateUserInformation = (req, res) => {
                     .status(404)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
             }
-            res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
         });
 };
 
@@ -88,7 +88,7 @@ const updateUserAvatar = (req, res) => {
                     .status(404)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
             }
-            res.status(200).send({ data: user })
+            return res.status(200).send({ data: user })
         })
         .catch((err) => {
             if (err.name === 'ValidationError') {
@@ -96,7 +96,7 @@ const updateUserAvatar = (req, res) => {
                     .status(400)
                     .send({ message: 'Некорректные данные' });
             }
-            res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
         });
 };
 

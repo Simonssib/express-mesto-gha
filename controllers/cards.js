@@ -16,7 +16,7 @@ const createCard = (req, res) => {
             if (err.name === 'ValidationError') {
                 return res.status(400).send({ message: 'Некорректные данные' });
             }
-            res.status(500).send({ message: `Что-то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что-то пошло не так: ${err}` })
         });
 };
 
@@ -29,13 +29,13 @@ const deleteCard = (req, res) => {
                     .status(404)
                     .send({ message: 'Карточка не найдена' });
             }
-            res.status(200).send({ data: card })
+            return res.status(200).send({ data: card })
         })
         .catch((err) => {
             if (err.name === 'CastError') {
                 return res.status(400).send({ message: 'Карточка не найдена' });
             }
-            res.status(500).send({ message: `Что-то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что-то пошло не так: ${err}` })
         });
 };
 
@@ -52,7 +52,7 @@ const setLike = (req, res) => {
                     .status(404)
                     .send({ message: 'Карточка не найдена' });
             }
-            res.status(200).send({ data: card })
+            return res.status(200).send({ data: card })
         })
         .catch((err) => {
             if (err.name === 'CastError') {
@@ -60,7 +60,7 @@ const setLike = (req, res) => {
                     .status(400)
                     .send({ message: 'Карточка не найдена' });
             }
-            res.status(500).send({ message: `Что-то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что-то пошло не так: ${err}` })
         });
 };
 
@@ -77,7 +77,7 @@ const deleteLike = (req, res) => {
                     .status(404)
                     .send({ message: 'Карточка не найдена' });
             }
-            res.status(200).send({ data: card });
+            return res.status(200).send({ data: card });
         })
         .catch((err) => {
             if (err.name === 'CastError') {
@@ -85,7 +85,7 @@ const deleteLike = (req, res) => {
                     .status(400)
                     .send({ message: 'Карточка не найдена' });
             }
-            res.status(500).send({ message: `Что-то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что-то пошло не так: ${err}` })
         });
 };
 
