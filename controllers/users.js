@@ -3,7 +3,7 @@ const User = require('../models/user');
 const getAllUsers = (req, res) => {
     User.find({})
         .then((user) => res.send({ data: user }))
-        .catch((err) => res.status(500).send({ message: `Что то пошло не так: ${err}` }));
+        .catch(() => res.status(500).send({ message: `Что то пошло не так` }));
 };
 
 const getUser = (req, res) => {
@@ -13,16 +13,14 @@ const getUser = (req, res) => {
         .then(user => {
             if (user === null) {
                 return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
-            }
-            return res.send({ data: user })
+            } else return res.send({ data: user })
         })
         .catch((err) => {
             if (err.name === 'CastError') {
                 return res
                     .status(400)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
-            }
-            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            } else return res.status(500).send({ message: `Что то пошло не так` })
         });
 };
 
@@ -36,8 +34,7 @@ const createUser = (req, res) => {
                 return res
                     .status(400)
                     .send({ message: 'Некорректные данные' });
-            }
-            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            } else return res.status(500).send({ message: `Что то пошло не так` })
         });
 };
 
@@ -55,21 +52,18 @@ const updateUserInformation = (req, res) => {
                 return res
                     .status(404)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
-            }
-            return res.status(200).send({ data: user })
+            } else return res.status(200).send({ data: user })
         })
         .catch((err) => {
             if (err.name === 'ValidationError') {
                 return res
                     .status(400)
                     .send({ message: 'Некорректные данные' });
-            }
-            if (err.name === 'CastError') {
+            } else if (err.name === 'CastError') {
                 return res
                     .status(404)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
-            }
-            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            } else return res.status(500).send({ message: `Что то пошло не так` })
         });
 };
 
@@ -87,16 +81,14 @@ const updateUserAvatar = (req, res) => {
                 return res
                     .status(404)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
-            }
-            return res.status(200).send({ data: user })
+            } else return res.status(200).send({ data: user })
         })
         .catch((err) => {
             if (err.name === 'ValidationError') {
                 return res
                     .status(400)
                     .send({ message: 'Некорректные данные' });
-            }
-            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            } else return res.status(500).send({ message: `Что то пошло не так` })
         });
 };
 
