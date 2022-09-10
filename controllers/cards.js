@@ -21,13 +21,13 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
     const { cardId } = req.params;
-    User.findByIdAndRemove(cardId)
+    Card.findByIdAndRemove(cardId)
         .then(card => {
             if (card === null) {
                 return res
                     .status(404)
                     .send({ message: 'Карточка не найдена' });
-            } else return res.status(200).send({ data: card })
+            } else return res.status(200).send({ data: card, message: 'DELETE' })
         })
         .catch((err) => {
             if (err.name === 'CastError') {
