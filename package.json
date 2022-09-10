@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "lint": "npx eslint .",
-        "start": "app.js",
+        "start": "node app.js",
         "dev": "nodemon app.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -21,9 +21,11 @@
     },
     "homepage": "https://github.com/Simonssib/express-mesto-gha#readme",
     "dependencies": {
+        "body-parser": "^1.20.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.26.0",
-        "express": "^4.18.1"
+        "express": "^4.18.1",
+        "mongoose": "^6.5.4"
     },
     "devDependencies": {
         "eslint": "^8.23.0",
