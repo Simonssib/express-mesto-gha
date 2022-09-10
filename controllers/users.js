@@ -7,12 +7,14 @@ const getAllUsers = (req, res) => {
 };
 
 const getUser = (req, res) => {
-    User.findById(req.params._id)
+    const { userId } = req.params;
+
+    User.findById(userId)
         .then(user => {
             if (user === null) {
                 return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
             }
-            res.send({ data: user })
+            return res.send({ data: user })
         })
         .catch((err) => {
             if (err.name === 'CastError') {
@@ -20,7 +22,7 @@ const getUser = (req, res) => {
                     .status(400)
                     .send({ message: 'Запрашиваемый пользователь не найден' });
             }
-            res.status(500).send({ message: `Что то пошло не так: ${err}` })
+            return res.status(500).send({ message: `Что то пошло не так: ${err}` })
         });
 };
 
