@@ -3,7 +3,6 @@
 
     "rules": {
         "no-underscore-dangle": ["error", { "allow": ["_id"] }],
-        //без нижеупомянутых настроек eslint не пропускает
         "linebreak-style": ["error", "unix"],
         "no-console": "off"
     }
