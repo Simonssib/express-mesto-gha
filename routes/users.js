@@ -17,7 +17,10 @@ userRoutes.post('/signin', login);
 userRoutes.use(auth);
 
 userRoutes.get('/', getAllUsers);
+/*
 userRoutes.get('/:userId', getUser);
+*/
+userRoutes.get('/me', getUser);
 userRoutes.patch('/me', updateUserInformation);
 userRoutes.patch('/me/avatar', updateUserAvatar);
 

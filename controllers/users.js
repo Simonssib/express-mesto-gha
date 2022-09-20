@@ -14,11 +14,9 @@ const getAllUsers = (req, res) => {
 };
 
 const getUser = (req, res) => {
-  const { userId } = req.params;
-
-  User.findById(userId)
+  User.findById(req.user._id)
     .then((user) => {
-      if (user === null) {
+      if (!user) {
         return res.status(notFound).send({ message: 'Запрашиваемый пользователь не найден' });
       } return res.send({ data: user });
     })
@@ -94,8 +92,7 @@ const updateUserAvatar = (req, res) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findOne({ email })
-    .select('+password')
+  User.findOne({ email }).select('+password')
     .orFail(() => new Error('Пользователь не найден'))
     .then((user) => {
       bcrypt.compare(password, user.password)
