@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const OK = 200;
@@ -90,10 +91,38 @@ const updateUserAvatar = (req, res) => {
     });
 };
 
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .select('+password')
+    .orFail(() => new Error('Пользователь не найден'))
+    .then((user) => {
+      bcrypt.compare(password, user.password)
+        .then((isUserValid) => {
+          if (isUserValid) {
+            const token = jwt.sign({
+              _id: user._id,
+            }, 'SECRET');
+            res.cookie('jwt', token, {
+              maxAge: 3600000,
+              httpOnly: true,
+              sameSite: true,
+            });
+            res.send({ data: user.toJSON() });
+          } else {
+            res.status(403).send({ message: 'Неправильный пароль' });
+          }
+        });
+    })
+    .catch(next);
+};
+
 module.exports = {
   getAllUsers,
   getUser,
   createUser,
   updateUserInformation,
   updateUserAvatar,
+  login,
 };
