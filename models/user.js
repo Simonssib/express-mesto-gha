@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -16,11 +17,19 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://images.unsplash.com/photo-1663579111009-863bc978c78e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    validate: {
+      validator: (v) => validator.isURL(v),
+      message: 'Неправильный формат ссылки',
+    },
   },
   email: {
     type: String,
     unique: true,
     required: [true, 'Поле "email" должно быть заполнено'],
+    validate: {
+      validator: (v) => validator.isEmail(v),
+      message: 'Неправильный формат почты',
+    },
   },
   password: {
     type: String,
