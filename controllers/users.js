@@ -2,10 +2,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const BadRequestError = require('../errors/bad-request-error');
+const ConflictError = require('../errors/conflict-error');
+const NotFoundError = require('../errors/not-found-err');
+
 const OK = 200;
 const internalServerError = 500;
-const notFound = 404;
-const badRequest = 400;
 
 const getAllUsers = (req, res) => {
   User.find({})
@@ -13,23 +15,22 @@ const getAllUsers = (req, res) => {
     .catch(() => res.status(internalServerError).send({ message: 'Что то пошло не так' }));
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        return res.status(notFound).send({ message: 'Запрашиваемый пользователь не найден' });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       } return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res
-          .status(badRequest)
-          .send({ message: 'Переданный id некорректный' });
-      } return res.status(internalServerError).send({ message: 'Что то пошло не так' });
+        next(new BadRequestError('Некорректный данные пользователя'));
+        return;
+      } next(err);
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -41,51 +42,54 @@ const createUser = (req, res) => {
         .then((user) => res.send({ data: user }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            return res
-              .status(badRequest)
-              .send({ message: 'Некорректные данные' });
-          } return res.status(internalServerError).send({ message: 'Что то пошло не так' });
+            next(new BadRequestError('Некорректные данные'));
+            return;
+          }
+          if (err.code === 11000) {
+            next(new ConflictError());
+            return;
+          }
+          next(err);
         });
     });
 };
 
-const updateUserInformation = (req, res) => {
+const updateUserInformation = (req, res, next) => {
   const userId = req.user._id;
   const { name, about } = req.body;
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (user === null) {
-        return res
-          .status(notFound)
-          .send({ message: 'Запрашиваемый пользователь не найден' });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       } return res.status(OK).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(badRequest)
-          .send({ message: 'Некорректные данные' });
-      } return res.status(internalServerError).send({ message: 'Что то пошло не так' });
+        next(new BadRequestError('Некорректные данные'));
+        return;
+      }
+      if (err.name === 'CastError') {
+        next(new NotFoundError('Запрашиваемый пользователь не найден'));
+        return;
+      }
+      next(err);
     });
 };
 
-const updateUserAvatar = (req, res) => {
+const updateUserAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res
-          .status(notFound)
-          .send({ message: 'Запрашиваемый пользователь не найден' });
+        throw new NotFoundError('Запрашиваемый пользователь не найден');
       } return res.status(OK).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(badRequest)
-          .send({ message: 'Некорректные данные' });
-      } return res.status(internalServerError).send({ message: 'Что то пошло не так' });
+        next(new BadRequestError('Некорректные данные'));
+        return;
+      } next(err);
     });
 };
 
