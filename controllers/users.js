@@ -7,12 +7,11 @@ const ConflictError = require('../errors/conflict-error');
 const NotFoundError = require('../errors/not-found-err');
 
 const OK = 200;
-const internalServerError = 500;
 
-const getAllUsers = (req, res) => {
+const getAllUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(internalServerError).send({ message: 'Что то пошло не так' }));
+    .catch(next);
 };
 
 const getUser = (req, res, next) => {
