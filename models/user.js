@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcrypt');
-const UnauthorizedError = require('../errors/unauthorized-error');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -44,12 +42,11 @@ const userSchema = new mongoose.Schema({
     versionKey: false,
   },
 });
-/*
+
 userSchema.method.toJSON = () => {
   const user = this.toObject();
   delete user.password;
   return user;
 };
-*/
 
 module.exports = mongoose.model('user', userSchema);

@@ -75,7 +75,7 @@ const createUser = (req, res, next) => {
     .then((user) => {
       res
         .status(201)
-        .send({ data: user.toObject() });
+        .send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -128,7 +128,7 @@ const updateUserAvatar = (req, res, next) => {
       } next(err);
     });
 };
-/*
+
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -154,7 +154,7 @@ const login = (req, res, next) => {
     })
     .catch(next);
 };
-*/
+/*
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -176,7 +176,7 @@ const login = (req, res, next) => {
     })
     .catch(next);
 };
-
+*/
 module.exports = {
   getAllUsers,
   getUser,
