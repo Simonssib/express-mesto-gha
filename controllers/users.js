@@ -41,16 +41,15 @@ const createUser = (req, res, next) => {
         .then((user) => res.status(201).send({ data: user }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            next(new BadRequestError('Некорректные данные'));
-            return;
-          }
+            throw new BadRequestError('Некорректные данные');
+          } else
           if (err.code === 11000) {
-            next(new ConflictError());
-            return;
+            throw new ConflictError();
           }
           next(err);
         });
-    });
+    })
+    .catch(next);
 };
 
 const updateUserInformation = (req, res, next) => {
