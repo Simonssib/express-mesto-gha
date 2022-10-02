@@ -37,11 +37,11 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 }, { versionKey: false });
-
+/*
 userSchema.method.toJSON = () => {
   const user = this.toObject();
   delete user.password;
   return user;
 };
-
+*/
 module.exports = mongoose.model('user', userSchema);
