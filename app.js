@@ -6,7 +6,6 @@ const userRoutes = require('./routes/users');
 const routerCards = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
-const { ERROR_500 } = require('./utils/code');
 const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
@@ -34,16 +33,9 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = ERROR_500, message } = err;
-
   res
-    .status(err.statusCode)
-    .send({
-      message: statusCode === ERROR_500
-        ? 'Что-то пошло не так'
-        : message,
-    });
-
+    .status(500)
+    .send({ message: 'На сервере произошла ошибка' });
   next();
 });
 
