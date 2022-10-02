@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
@@ -128,7 +128,7 @@ const updateUserAvatar = (req, res, next) => {
       } next(err);
     });
 };
-
+/*
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -154,7 +154,7 @@ const login = (req, res, next) => {
     })
     .catch(next);
 };
-/*
+*/
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -176,7 +176,7 @@ const login = (req, res, next) => {
     })
     .catch(next);
 };
-*/
+
 module.exports = {
   getAllUsers,
   getUser,
