@@ -38,18 +38,19 @@ const createUser = (req, res, next) => {
       User.create({
         name, about, avatar, email, password: hashedPassword,
       })
-        .then((user) => res.status(201).send({ data: user }))
+        .then((user) => res.send({ data: user }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            throw new BadRequestError('Некорректные данные');
-          } else
+            next(new BadRequestError('Некорректные данные'));
+            return;
+          }
           if (err.code === 11000) {
-            throw new ConflictError();
+            next(new ConflictError());
+            return;
           }
           next(err);
         });
-    })
-    .catch(next);
+    });
 };
 
 const updateUserInformation = (req, res, next) => {
