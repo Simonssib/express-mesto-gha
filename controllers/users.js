@@ -128,7 +128,7 @@ const updateUserAvatar = (req, res, next) => {
       } next(err);
     });
 };
-
+/*
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -151,6 +151,28 @@ const login = (req, res, next) => {
             res.status(403).send({ message: 'Неправильный пароль' });
           }
         });
+    })
+    .catch(next);
+};
+*/
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'SECRET', {
+        expiresIn: '7d',
+      });
+
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+        })
+        .send({
+          email: user.email,
+        })
+        .end();
     })
     .catch(next);
 };
