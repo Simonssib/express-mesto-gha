@@ -7,6 +7,7 @@ const routerCards = require('./routes/cards');
 const auth = require('./middlewares/auth');
 const NotFoundError = require('./errors/not-found-err');
 const { ERROR_500 } = require('./utils/code');
+const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 
@@ -19,16 +20,12 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-/*
-app.use((req, res, next) => {
-  req.user = {
-    _id: '631bafc6279483c9ca556d2e',
-  };
 
-  next();
-});
-*/
+app.post('/signin', login);
+app.post('/signup', createUser);
+
 app.use(auth);
+
 app.use('/users', userRoutes);
 app.use('/cards', routerCards);
 
@@ -43,7 +40,7 @@ app.use((err, req, res, next) => {
     .status(err.statusCode)
     .send({
       message: statusCode === ERROR_500
-        ? 'На сервере произошла ошибка'
+        ? 'Что-то пошло не так'
         : message,
     });
 
