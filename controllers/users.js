@@ -28,17 +28,18 @@ const getUser = (req, res, next) => {
       } next(err);
     });
 };
-
+/*
 const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
+
   bcrypt.hash(password, 10)
     .then((hashedPassword) => {
       User.create({
         name, about, avatar, email, password: hashedPassword,
       })
-        .then((user) => res.send({ data: user }))
+        .then((user) => res.send(user.toObject()))
         .catch((err) => {
           if (err.name === 'ValidationError') {
             next(new BadRequestError('Некорректные данные'));
@@ -50,6 +51,42 @@ const createUser = (req, res, next) => {
           }
           next(err);
         });
+    });
+};
+*/
+const createUser = (req, res, next) => {
+  const {
+    email,
+    password,
+    name,
+    about,
+    avatar,
+  } = req.body;
+
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name,
+      about,
+      avatar,
+    }))
+    .then((user) => {
+      res
+        .status(201)
+        .send({ data: user.toObject() });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Некорректные данные'));
+        return;
+      }
+      if (err.code === 11000) {
+        next(new ConflictError());
+        return;
+      }
+      next(err);
     });
 };
 
