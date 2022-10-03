@@ -17,43 +17,30 @@ const getAllUsers = (req, res, next) => {
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const getUserById = (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
       if (!user) {
-        throw new NotFoundError('Запрашиваемый пользователь не найден');
-      } return res.send({ data: user });
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Некорректный данные пользователя'));
+        next(new BadRequestError('Невалидный id'));
         return;
-      } next(err);
+      }
+      next(err);
     });
 };
-/*
-const createUser = (req, res, next) => {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
 
-  bcrypt.hash(password, 10)
-    .then((hashedPassword) => {
-      User.create({
-        name, about, avatar, email, password: hashedPassword,
-      })
-        .then((user) => res.send(user.toObject()))
-        .catch((err) => {
-          if (err.name === 'ValidationError') {
-            next(new BadRequestError('Некорректные данные'));
-            return;
-          }
-          if (err.code === 11000) {
-            next(new ConflictError());
-            return;
-          }
-          next(err);
-        });
-    });
-};
-*/
 const createUser = (req, res, next) => {
   const {
     email,
@@ -133,33 +120,7 @@ const updateUserAvatar = (req, res, next) => {
       } next(err);
     });
 };
-/*
-const login = (req, res, next) => {
-  const { email, password } = req.body;
 
-  User.findOne({ email }).select('+password')
-    .orFail(() => new Error('Пользователь не найден'))
-    .then((user) => {
-      bcrypt.compare(password, user.password)
-        .then((isUserValid) => {
-          if (isUserValid) {
-            const token = jwt.sign({
-              _id: user._id,
-            }, 'SECRET');
-            res.cookie('jwt', token, {
-              maxAge: 3600000,
-              httpOnly: true,
-              sameSite: true,
-            });
-            res.send({ data: user.toJSON() });
-          } else {
-            res.status(403).send({ message: 'Неправильный пароль' });
-          }
-        });
-    })
-    .catch(next);
-};
-*/
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -185,6 +146,7 @@ const login = (req, res, next) => {
 module.exports = {
   getAllUsers,
   getUser,
+  getUserById,
   createUser,
   updateUserInformation,
   updateUserAvatar,
