@@ -12,13 +12,13 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    default: 'Исследователь океана',
+    default: 'Исследователь',
     minlength: [2, 'Должно быть, не меньше 2 символа'],
     maxlength: [30, 'Должно быть, не больше 30 символов'],
   },
   avatar: {
     type: String,
-    default: 'https://images.unsplash.com/photo-1663579111009-863bc978c78e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (v) => validator.isURL(v),
       message: 'Неправильный формат ссылки',
