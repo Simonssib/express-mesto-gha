@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { compare } = require('bcrypt');
+const UnauthorizedError = require('../errors/unauthorized-error');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Жак-Ив Кусто',
-    minlength: [2, 'Должно быть, не меньше 2 символа, получено {VALUE}'],
-    maxlength: [30, 'Должно быть, не больше 30 символов, получено {VALUE} '],
+    minlength: [2, 'Должно быть, не меньше 2 символа'],
+    maxlength: [30, 'Должно быть, не больше 30 символов'],
   },
   about: {
     type: String,
     default: 'Исследователь океана',
-    minlength: [2, 'Должно быть, не меньше 2 символа, получено {VALUE}'],
-    maxlength: [30, 'Должно быть, не больше 30 символов, получено {VALUE} '],
+    minlength: [2, 'Должно быть, не меньше 2 символа'],
+    maxlength: [30, 'Должно быть, не больше 30 символов'],
   },
   avatar: {
     type: String,
@@ -47,6 +49,22 @@ userSchema.method.toJSON = () => {
   const user = this.toObject();
   delete user.password;
   return user;
+};
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new UnauthorizedError('Ошибка авторизации');
+      }
+      return compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new UnauthorizedError('Ошибка авторизации');
+          }
+          return user;
+        });
+    });
 };
 
 module.exports = mongoose.model('user', userSchema);
