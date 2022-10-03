@@ -29,24 +29,23 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const userId = req.user._id;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .then((card) => {
-      if (card === null) {
-        throw new NotFoundError('Картачка не найдена');
+      if (!card) {
+        throw new NotFoundError('Карточка с указанным _id не найдена');
       }
-      if (JSON.stringify(card.owner) !== JSON.stringify(userId)) {
-        throw new ForbiddenError();
+      if (JSON.stringify(card.owner) !== JSON.stringify(req.user._id)) {
+        throw new ForbiddenError('Недостаточно прав для удаления карточки');
       }
-      return card;
+      return Card.remove(card);
     })
-    .then((card) => Card.deleteOne(card))
-    .then((card) => res.status(OK).send({ card, message: 'DELETE' }))
+    .then(() => res.status(200).send({ message: 'Карточка удалена' }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Переданный id неправильный'));
+        next(new BadRequestError('Некорректный id'));
         return;
-      } next();
+      }
+      next(err);
     });
 };
 
