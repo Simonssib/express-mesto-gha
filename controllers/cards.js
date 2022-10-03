@@ -35,7 +35,7 @@ const deleteCard = (req, res, next) => {
       if (card === null) {
         throw new NotFoundError('Картачка не найдена');
       }
-      if (card.owner.toString() !== userId) {
+      if (JSON.stringify(card.owner) !== JSON.stringify(userId)) {
         throw new ForbiddenError();
       }
       return card;
