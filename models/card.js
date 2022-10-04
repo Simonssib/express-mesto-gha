@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -12,8 +11,9 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (v) => validator.isURL(v),
-      message: 'Неправильный формат ссылки',
+      validator(value) {
+        return /https?:\/\/(\w{3}\.)?[1-9a-z\-.]{1,}\w\w(\/[1-90a-z.,_@%&?+=~/-]{1,}\/?)?#?/i.test(value);
+      },
     },
   },
   owner: {
