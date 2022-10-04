@@ -5,12 +5,11 @@ const ForbiddenError = require('../errors/forbidden-error');
 const NotFoundError = require('../errors/not-found-err');
 
 const OK = 200;
-const internalServerError = 500;
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(internalServerError).send({ message: 'Что-то пошло не так' }));
+    .catch(next);
 };
 
 const createCard = (req, res, next) => {
